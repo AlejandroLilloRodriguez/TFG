@@ -8,13 +8,11 @@ class Usuario(AbstractUser):
     
     name = models.CharField(max_length=150)
     email = models.EmailField(unique=True)
-    contraseña = models.CharField(max_length=128)
     rol = models.CharField(max_length=10, choices=Roles.choices, default=Roles.Empleado)
 
     
-    
-class Vehiculo(models.Model):
-    pass
+    def __str__(self):
+        return f"{self.username} ({self.rol})"
 
 
 # Create your models here.
