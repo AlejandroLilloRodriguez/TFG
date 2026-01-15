@@ -16,4 +16,7 @@ class Reserva(models.Model):
     estado = models.CharField(max_length=20,choices=Estado.choices,default=Estado.RESERVADA)
     usuario = models.ForeignKey()
     plaza = models.ForeignKey()
+
+    # Hay que tener en cuenta que queremos que los usuarios se apunten a un dia y el algoritmo le asigna unas plazas segun unas reglas predefinidas
+    
 # Create your models here.
