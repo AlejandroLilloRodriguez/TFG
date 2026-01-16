@@ -1,7 +1,7 @@
 from django.db import models
 from usuarios.models import Usuario
 from plazas.models import Plaza
-
+from vehiculo.models import Vehiculo
 
 class Estado(models.TextChoices):
     RESERVADA = "RESERVADA", "Reservada"
@@ -13,10 +13,20 @@ class Estado(models.TextChoices):
 class Reserva(models.Model):
     fechaInicio = models.DateTimeField()
     fechaFinal = models.DateTimeField()
-    estado = models.CharField(max_length=20,choices=Estado.choices,default=Estado.RESERVADA)
-    usuario = models.ForeignKey()
-    plaza = models.ForeignKey()
 
-    # Hay que tener en cuenta que queremos que los usuarios se apunten a un dia y el algoritmo le asigna unas plazas segun unas reglas predefinidas
-    
-# Create your models here.
+    estado = models.CharField(max_length=20, choices=Estado.choices, default=Estado.RESERVADA)
+
+    usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
+    vehiculo = models.ForeignKey(Vehiculo, on_delete=models.CASCADE)
+
+    plaza = models.ForeignKey(
+        Plaza,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="reservas"
+    )
+
+    def __str__(self):
+        return f"Reserva {self.usuario.username} {self.fechaInicio} ({self.estado})"
+

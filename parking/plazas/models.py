@@ -5,7 +5,7 @@ class Planta(models.Model):
     numeroPlazas = models.IntegerField()
     
     def __str__(self):
-        return self.nivel
+        return str(self.nivel)
     
 class Plaza(models.Model):
     numero = models.IntegerField()

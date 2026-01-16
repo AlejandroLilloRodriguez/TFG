@@ -18,7 +18,7 @@ class LecturaMatricula(models.Model):
     fechaHora = models.DateTimeField(default=timezone.now)
 
     tipo = models.CharField(max_length=10, choices=TipoLectura.choices)
-    resultado = models.CharField(max_length=10,choices = ResultadoLectura.choices)
+    resultado = models.CharField(max_length=20,choices = ResultadoLectura.choices)
     reserva = models.ForeignKey(
     Reserva,
     on_delete=models.SET_NULL,
