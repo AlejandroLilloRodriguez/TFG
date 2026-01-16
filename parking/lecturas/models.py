@@ -2,18 +2,20 @@ from django.db import models
 from django.utils import timezone
 from reservas.models import Reserva
 
-class TipoLectura(models.TextChoices):
-    Entrada = "ENTRADA","Entrada"
-    Salida = "SALIDA","Salida"
-class ResultadoLectura(models.TextChoices):
-    OK = "OK", "Correcto"
-    SIN_RESERVA = "SIN_RESERVA", "Sin reserva"
-    DENEGADO = "DENEGADO", "Denegado"
-    ERROR = "ERROR", "Error"
+
 
 class LecturaMatricula(models.Model):
-    matricula = models.CharField(max_field = 15)
-    fecha_hora = models.DateTimeField(default=timezone.now)
+    class TipoLectura(models.TextChoices):
+        Entrada = "ENTRADA","Entrada"
+        Salida = "SALIDA","Salida"
+    class ResultadoLectura(models.TextChoices):
+        OK = "OK", "Correcto"
+        SIN_RESERVA = "SIN_RESERVA", "Sin reserva"
+        DENEGADO = "DENEGADO", "Denegado"
+        ERROR = "ERROR", "Error"
+
+    matricula = models.CharField(max_length = 15)
+    fechaHora = models.DateTimeField(default=timezone.now)
 
     tipo = models.CharField(max_length=10, choices=TipoLectura.choices)
     resultado = models.CharField(max_length=10,choices = ResultadoLectura.choices)
@@ -21,5 +23,8 @@ class LecturaMatricula(models.Model):
     Reserva,
     on_delete=models.SET_NULL,
     null=True
-)
+    )
+
+    def __str__(self):
+        return f"{self.matricula} {self.tipo} {self.resultado} {self.fechaHora}"
 
