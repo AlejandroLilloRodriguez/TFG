@@ -4,6 +4,9 @@ from plazas.models import Plaza
 from vehiculo.models import Vehiculo
 
 class Estado(models.TextChoices):
+    PENDIENTE = "PENDIENTE", "Pendiente de asignación"
+    ASIGNADA = "ASIGNADA", "Asignada"
+    NO_ASIGNADA = "NO_ASIGNADA", "No asignada"
     RESERVADA = "RESERVADA", "Reservada"
     OCUPADA = "OCUPADA", "Ocupada en plaza"
     FINALIZADA = "FINALIZADA", "Finalizada"
@@ -14,7 +17,7 @@ class Reserva(models.Model):
     fechaInicio = models.DateTimeField()
     fechaFinal = models.DateTimeField()
 
-    estado = models.CharField(max_length=20, choices=Estado.choices, default=Estado.RESERVADA)
+    estado = models.CharField(max_length=20, choices=Estado.choices, default=Estado.PENDIENTE)
 
     usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
     vehiculo = models.ForeignKey(Vehiculo, on_delete=models.CASCADE)
