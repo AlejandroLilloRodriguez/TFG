@@ -1,8 +1,12 @@
 from rest_framework.routers import DefaultRouter
 from .views import ReservaViewSet
+from django.urls import path
+from .views import EjecutarAsignacionApiView
 
 router = DefaultRouter()
 router.register(r"reservas", ReservaViewSet, basename="reservas")
-router.register(r"ejecutar-asignacion", ReservaViewSet, basename="ejecutar-asignacion")
+urlpatterns = router.urls + [
+    path("ejecutar-asignacion/", EjecutarAsignacionApiView.as_view(), name="ejecutar-asignacion"),
+]
 
 urlpatterns = router.urls
