@@ -7,7 +7,6 @@ class Estado(models.TextChoices):
     PENDIENTE = "PENDIENTE", "Pendiente de asignación"
     ASIGNADA = "ASIGNADA", "Asignada"
     NO_ASIGNADA = "NO_ASIGNADA", "No asignada"
-    RESERVADA = "RESERVADA", "Reservada"
     OCUPADA = "OCUPADA", "Ocupada en plaza"
     FINALIZADA = "FINALIZADA", "Finalizada"
     CANCELADA = "CANCELADA", "Cancelada"
