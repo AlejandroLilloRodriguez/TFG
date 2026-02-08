@@ -50,46 +50,46 @@ class LecturasService:
         }
 
 
-def registrarSalida(self, matricula):
-    fecha = timezone.now().date()
-    vehiculo = Vehiculo.objects.filter(matricula=matricula).first()
+    def registrarSalida(self, matricula):
+        fecha = timezone.now().date()
+        vehiculo = Vehiculo.objects.filter(matricula=matricula).first()
 
-    if not vehiculo:
+        if not vehiculo:
+            LecturaMatricula.objects.create(
+                matricula=matricula,
+                tipo=LecturaMatricula.TipoLectura.Salida,
+                resultado=LecturaMatricula.ResultadoLectura.DENEGADO,
+            )
+            return {"resultado": "DENEGADO"}
+
+        reserva = Reserva.objects.filter(
+            vehiculo=vehiculo,
+            fechaInicio__date=fecha,
+            estado=Estado.OCUPADA,
+        ).select_related("plaza").first()
+
+        if not reserva:
+            LecturaMatricula.objects.create(
+                matricula=matricula,
+                tipo=LecturaMatricula.TipoLectura.Salida,
+                resultado=LecturaMatricula.ResultadoLectura.SIN_RESERVA,
+            )
+            return {"resultado": "SIN_RESERVA"}
+
+        reserva.estado = Estado.FINALIZADA
+        reserva.save(update_fields=["estado"])
+
+    
+        if reserva.plaza_id is not None:
+            plaza = reserva.plaza
+            plaza.disponible = True
+            plaza.save(update_fields=["disponible"])
+
         LecturaMatricula.objects.create(
             matricula=matricula,
             tipo=LecturaMatricula.TipoLectura.Salida,
-            resultado=LecturaMatricula.ResultadoLectura.DENEGADO,
+            resultado=LecturaMatricula.ResultadoLectura.OK,
+            reserva=reserva,
         )
-        return {"resultado": "DENEGADO"}
 
-    reserva = Reserva.objects.filter(
-        vehiculo=vehiculo,
-        fechaInicio__date=fecha,
-        estado=Estado.OCUPADA,
-    ).select_related("plaza").first()
-
-    if not reserva:
-        LecturaMatricula.objects.create(
-            matricula=matricula,
-            tipo=LecturaMatricula.TipoLectura.Salida,
-            resultado=LecturaMatricula.ResultadoLectura.SIN_RESERVA,
-        )
-        return {"resultado": "SIN_RESERVA"}
-
-    reserva.estado = Estado.FINALIZADA
-    reserva.save(update_fields=["estado"])
-
-   
-    if reserva.plaza_id is not None:
-        plaza = reserva.plaza
-        plaza.disponible = True
-        plaza.save(update_fields=["disponible"])
-
-    LecturaMatricula.objects.create(
-        matricula=matricula,
-        tipo=LecturaMatricula.TipoLectura.Salida,
-        resultado=LecturaMatricula.ResultadoLectura.OK,
-        reserva=reserva,
-    )
-
-    return {"resultado": "OK"}
+        return {"resultado": "OK"}

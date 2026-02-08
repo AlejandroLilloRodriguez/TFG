@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { api } from "../api/Cliente";
 import "./Login.css";
 
@@ -7,34 +8,30 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [status, setStatus] = useState(null);
 
+  const navigate = useNavigate();
+
   async function handleSubmit(e) {
     e.preventDefault();
     setStatus("Cargando...");
 
     try {
       const res = await api.post("/api/token/", {
-        username: email, 
-        password: password,
+        username: email,
+        password,
       });
 
       localStorage.setItem("access_token", res.data.access);
       localStorage.setItem("refresh_token", res.data.refresh);
 
-      setStatus("Correcto");
+      const me = await api.get("/api/me/");
+      console.log("ME:", me.data);
 
-      const usuario_actual = await api.get("/api/me/");
-      navigate("/");
-
-    // 4) Redirigir por rol
-    if (usuario_actual.data.rol === "ADMIN") {
-      navigate("/admin/asignacion");
-    } else {
-      navigate("/empleado/reservas");
+      setStatus(null);
+      navigate("/", { replace: true });
+    } catch (err) {
+      console.log("ERROR login:", err);
+      setStatus(err.response?.data?.detail ?? "Incorrecto");
     }
-  } catch (err) {
-    setStatus("Incorrecto");
-  }
-    
   }
 
   return (
@@ -42,11 +39,11 @@ export default function Login() {
       <h1>LOGIN</h1>
 
       <div className="input-group">
-        <label htmlFor="email">EMAIL</label>
+        <label htmlFor="email">USERNAME</label>
         <input
-          type="email"
+          type="text"
           id="email"
-          placeholder="your@email.com"
+          placeholder="admin2"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
@@ -69,13 +66,9 @@ export default function Login() {
 
       {status && <p style={{ marginTop: 10 }}>{status}</p>}
 
-      
-      
-
       <div className="footer">
         Don't have an account? <a href="#">Sign up</a>
       </div>
     </form>
   );
 }
-
