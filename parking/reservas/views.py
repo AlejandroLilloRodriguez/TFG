@@ -14,13 +14,20 @@ from datetime import datetime
 from .serializer import NoShowRequestSerializer
 
 class ReservaViewSet(viewsets.ModelViewSet):
+    queryset = Reserva.objects.all()
     serializer_class = ReservaSerializer
+    permission_classes = [IsAuthenticated]
+
+    def list(self, request, *args, **kwargs):
+        print("AUTH HEADER:", request.headers.get("Authorization"))
+        print("USER:", request.user, "is_authenticated:", request.user.is_authenticated)
+        return super().list(request, *args, **kwargs)
+
     def get_queryset(self):
         user = self.request.user
         if getattr(user, "rol", None) == "ADMIN":
             return Reserva.objects.all()
-        else :
-            return Reserva.objects.filter(usuario=user)
+        return Reserva.objects.filter(usuario=user)
 
 class EjecutarAsignacionApiView(APIView):
     permission_classes = [IsAuthenticated, EsAdmin]

@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { api } from "../api/Cliente";
 import "./Login.css";
 
-export default function Login() {
+export default function Login( { setToken }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [status, setStatus] = useState(null);
@@ -27,7 +27,8 @@ export default function Login() {
       console.log("ME:", me.data);
 
       setStatus(null);
-      navigate("/", { replace: true });
+      setToken(res.data.access);
+      navigate("/");
     } catch (err) {
       console.log("ERROR login:", err);
       setStatus(err.response?.data?.detail ?? "Incorrecto");

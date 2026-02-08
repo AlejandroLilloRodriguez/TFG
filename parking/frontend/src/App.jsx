@@ -1,19 +1,24 @@
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+
 import Ping from "./pages/Ping";
 import Login from "./pages/Login";
 import Home from "./pages/Home";
 import Simulador from "./pages/Simulador";
+import Reservas from "./pages/MisReservas";
 
-function Index() {
-  const token = localStorage.getItem("access_token");
-  if (token) {
-    return <Home />;
-  } else {
-    return <Login />;
-  }
+function Index({ token }) {
+  return token ? <Home /> : <Login />;
 }
 
 export default function App() {
+  const [token, setToken] = useState(null);
+
+  useEffect(() => {
+    const storedToken = localStorage.getItem("access_token");
+    setToken(storedToken);
+  }, []);
+
   return (
     <BrowserRouter>
       <div style={{ padding: 16, fontFamily: "system-ui" }}>
@@ -24,13 +29,24 @@ export default function App() {
           <Link to="/ping">Ping</Link>
           <Link to="/login">Login</Link>
           <Link to="/simulador">Simulador</Link>
+          <Link to="/reservas">Mis Reservas</Link>
         </nav>
 
         <Routes>
-          <Route path="/" element={<Index/>} />
+          <Route path="/" element={<Index token={token} />} />
           <Route path="/ping" element={<Ping />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/simulador" element={<Simulador />} />
+          <Route
+            path="/login"
+            element={<Login setToken={setToken} />}
+          />
+          <Route
+            path="/simulador"
+            element={token ? <Simulador /> : <Login setToken={setToken} />}
+          />
+          <Route
+            path="/reservas"
+            element={token ? <Reservas /> : <Login setToken={setToken} />}
+          />
         </Routes>
       </div>
     </BrowserRouter>
