@@ -23,6 +23,7 @@ export default function Login() {
       setStatus("Correcto");
 
       const usuario_actual = await api.get("/api/me/");
+      navigate("/");
 
     // 4) Redirigir por rol
     if (usuario_actual.data.rol === "ADMIN") {
