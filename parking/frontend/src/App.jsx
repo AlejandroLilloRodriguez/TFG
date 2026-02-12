@@ -27,7 +27,6 @@ export default function App() {
 
         <nav style={{ display: "flex", gap: 12, marginBottom: 16 }}>
           <Link to="/">Home</Link>
-          <Link to="/ping">Ping</Link>
           <Link to="/login">Login</Link>
           <Link to="/simulador">Simulador</Link>
           <Link to="/reservas">Mis Reservas</Link>
