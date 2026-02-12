@@ -6,6 +6,7 @@ import Login from "./pages/Login";
 import Home from "./pages/Home";
 import Simulador from "./pages/Simulador";
 import Reservas from "./pages/MisReservas";
+import Vehiculos from "./pages/Vehiculos";
 
 function Index({ token }) {
   return token ? <Home /> : <Login />;
@@ -30,11 +31,11 @@ export default function App() {
           <Link to="/login">Login</Link>
           <Link to="/simulador">Simulador</Link>
           <Link to="/reservas">Mis Reservas</Link>
+          <Link to="/vehiculos">Mis Vehículos</Link>
         </nav>
 
         <Routes>
           <Route path="/" element={<Index token={token} />} />
-          <Route path="/ping" element={<Ping />} />
           <Route
             path="/login"
             element={<Login setToken={setToken} />}
@@ -46,6 +47,10 @@ export default function App() {
           <Route
             path="/reservas"
             element={token ? <Reservas /> : <Login setToken={setToken} />}
+          />
+          <Route
+            path="/vehiculos"
+            element={token ? <Vehiculos /> : <Login setToken={setToken} />}
           />
         </Routes>
       </div>
