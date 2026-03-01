@@ -22,6 +22,23 @@
             }
             cargarReservas();
         }, []);
+       async function cancelarReserva(id) {
+            setCargando(true);
+            setError(null);
+            try {
+                await api.post(`/api/reservas/${id}/cancelar/`);
+                setReservas(reservas.filter((r) => r.id !== id));
+            } catch (err) {
+                console.log(err);
+                setError("Error al cancelar reserva");
+            }
+            setCargando(false);
+       }
+        function puedeCancelar(estado) {
+            return estado === "PENDIENTE" || estado === "ASIGNADA";
+        }
+
+
         return (
             <div className="reservas-container">
                 <h1>Mis Reservas</h1>
@@ -39,6 +56,19 @@
                         ))}
                     </ul>
                 )}
+                {!cargando && !error && reservas.length > 0 && (
+                    <ul>
+                        {reservas.map((reserva) => (
+                            <li key={reserva.id}>
+                                <p><strong>Estado:</strong> {reserva.estado}</p>
+                                {puedeCancelar(reserva.estado) && (
+                                    <button onClick={() => cancelarReserva(reserva.id)}>Cancelar Reserva</button>
+                                )}
+                            </li>
+                        ))} 
+                    </ul>
+                )}
+
             </div>
         );
     }

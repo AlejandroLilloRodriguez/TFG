@@ -12,6 +12,7 @@ from .permisos import EsAdminUsuarioPermiso as EsAdmin
 from django.utils import timezone
 from datetime import datetime
 from .serializer import NoShowRequestSerializer
+from rest_framework.decorators import action
 
 class ReservaViewSet(viewsets.ModelViewSet):
     queryset = Reserva.objects.all()
@@ -28,6 +29,33 @@ class ReservaViewSet(viewsets.ModelViewSet):
         if getattr(user, "rol", None) == "ADMIN":
             return Reserva.objects.all()
         return Reserva.objects.filter(usuario=user)
+    
+
+    @action(detail=True, methods=["post"])
+    def cancelar(self, request, pk=None):
+        reserva = self.get_object()
+        if getattr(request.user, "rol", None) != "ADMIN" and reserva.usuario != request.user:
+            return Response(
+                {"detail": "No tienes permiso para cancelar esta reserva."},
+                status=status.HTTP_403_FORBIDDEN,
+            )
+        if reserva.estado not in [Estado.PENDIENTE, Estado.ASIGNADA]:
+            return Response(
+                {"detail": "Solo se pueden cancelar reservas pendientes."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        if reserva.estado == Estado.ASIGNADA and reserva.plaza is not None:
+            plaza = reserva.plaza
+            plaza.disponible = True
+            plaza.save(update_fields=["disponible"])
+        reserva.estado = Estado.CANCELADA
+        reserva.save(update_fields=["estado"])
+        return Response({"detail": "Reserva cancelada correctamente."}, status=status.HTTP_200_OK)
+    
+    def perform_create(self, serializer):
+        serializer.save(usuario=self.request.user, estado=Estado.PENDIENTE)
+    
+        
 
 class EjecutarAsignacionApiView(APIView):
     permission_classes = [IsAuthenticated, EsAdmin]

@@ -34,7 +34,9 @@ class AlgoritmoDeAsignacion:
        
         for reserva in reservas:
             if plazas_libres:
-                plaza = plazas_libres.pop(0)   
+                plaza = plazas_libres.pop(0)
+                reserva.disponible = False
+                plaza.save(update_fields=["disponible"])
                 reserva.estado = Estado.ASIGNADA
                 reserva.plaza = plaza
                 reserva.save(update_fields=["estado", "plaza"])
