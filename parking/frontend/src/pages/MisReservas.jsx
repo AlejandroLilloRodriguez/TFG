@@ -1,6 +1,7 @@
     import { useEffect } from "react";
     import { useState } from "react";
     import { api } from "../api/Cliente";
+    import "./css/MisReservas.css";
 
     export default function Reservas() {
         const [reservas, setReservas] = useState([]);
@@ -37,38 +38,89 @@
         function puedeCancelar(estado) {
             return estado === "PENDIENTE" || estado === "ASIGNADA";
         }
-
+        function formatearFecha(fechaStr) {
+            const fecha = new Date(fechaStr);
+            return fecha.toLocaleString("es-ES", {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+                hour: "2-digit",
+                minute: "2-digit",
+            });
+        }
 
         return (
-            <div className="reservas-container">
-                <h1>Mis Reservas</h1>
-                {cargando && <p>Cargando...</p>}
-                {error && <p style={{ color: "red" }}>{error}</p>}
-                {!cargando && !error && reservas.length === 0 && <p>No tienes reservas.</p>}
-                {!cargando && !error && reservas.length > 0 && (
-                    <ul>   
-                        {reservas.map((reserva) => (
-                            <li key={reserva.id}>
-                                <p><strong>Plaza:</strong> {reserva.plaza}</p>
-                                <p><strong>Hora de Entrada:</strong> {new Date(reserva.fechaInicio).toLocaleString()}</p>
-                                <p><strong>Hora de Salida:</strong> {new Date(reserva.fechaFinal).toLocaleString()}</p>
-                            </li>
-                        ))}
-                    </ul>
-                )}
-                {!cargando && !error && reservas.length > 0 && (
-                    <ul>
-                        {reservas.map((reserva) => (
-                            <li key={reserva.id}>
-                                <p><strong>Estado:</strong> {reserva.estado}</p>
-                                {puedeCancelar(reserva.estado) && (
-                                    <button onClick={() => cancelarReserva(reserva.id)}>Cancelar Reserva</button>
-                                )}
-                            </li>
-                        ))} 
-                    </ul>
+                <section className="reservas-page">
+                <div className="reservas-hero">
+                    <span className="reservas-badge">Panel de reservas</span>
+                    <h1 className="reservas-title">Mis Reservas</h1>
+                    <p className="reservas-description">
+                    Consulta el estado de tus reservas, revisa horarios y cancela aquellas
+                    que todavía estén activas.
+                    </p>
+                </div>
+
+                {cargando && (
+                    <div className="reservas-message">
+                    <p>Cargando reservas...</p>
+                    </div>
                 )}
 
-            </div>
-        );
+                {error && (
+                    <div className="reservas-message reservas-error">
+                    <p>{error}</p>
+                    </div>
+                )}
+
+                {!cargando && !error && reservas.length === 0 && (
+                    <div className="reservas-empty">
+                    <h2>No tienes reservas</h2>
+                    <p>
+                        Cuando realices una reserva, aparecerá aquí con su estado, plaza y
+                        horario.
+                    </p>
+                    </div>
+                )}
+
+                {!cargando && !error && reservas.length > 0 && (
+                    <div className="reservas-grid">
+                    {reservas.map((reserva) => (
+                        <article className="reserva-card" key={reserva.id}>
+                        <div className="reserva-card-top">
+                            <div>
+                            <p className="reserva-label">Plaza</p>
+                            <h3 className="reserva-plaza">{reserva.plaza}</h3>
+                            </div>
+                        </div>
+
+                        <div className="reserva-info">
+                            <div className="reserva-info-item">
+                            <span className="info-label">Entrada</span>
+                            <p>{formatearFecha(reserva.fechaInicio)}</p>
+                            </div>
+
+                            <div className="reserva-info-item">
+                            <span className="info-label">Salida</span>
+                            <p>{formatearFecha(reserva.fechaFinal)}</p>
+                            </div>
+                        </div>
+
+                        {puedeCancelar(reserva.estado) && (
+                            <div className="reserva-actions">
+                            <button
+                                className="cancelar-button"
+                                onClick={() => cancelarReserva(reserva.id)}
+                            >
+                                Cancelar reserva
+                            </button>
+                            </div>
+                        )}
+                        </article>
+                    ))}
+                    </div>
+                )}
+                </section>
+            );
+
+        
     }
