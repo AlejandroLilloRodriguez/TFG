@@ -3,6 +3,7 @@ from reservas.models import Reserva
 
 
 class ReservaSerializer(serializers.ModelSerializer):
+    usuario = serializers.CharField(source="usuario.username", read_only=True)
     class Meta:
         model = Reserva
         fields = [

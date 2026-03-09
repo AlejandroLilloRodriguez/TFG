@@ -98,11 +98,19 @@
                             <span className="info-label">Entrada</span>
                             <p>{formatearFecha(reserva.fechaInicio)}</p>
                             </div>
-
                             <div className="reserva-info-item">
                             <span className="info-label">Salida</span>
                             <p>{formatearFecha(reserva.fechaFinal)}</p>
                             </div>
+                            <div className="reserva-info-item">
+                            <span className="info-label">Estado</span>
+                            <p>{reserva.estado}</p>
+                            </div>
+                            <div className="reserva-info-item">
+                            <span className="info-label">Usuario</span>
+                            <p>{reserva.usuario}</p>
+                            </div>
+                            
                         </div>
 
                         {puedeCancelar(reserva.estado) && (

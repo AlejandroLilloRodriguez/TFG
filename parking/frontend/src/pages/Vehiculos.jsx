@@ -79,8 +79,8 @@ export default function Vehiculos() {
       {!cargando && !error && vehiculos.length > 0 && (
         <ul>
           {vehiculos.map((v) => (
-            <li key={v.id}>
-              <p><strong>Matrícula:</strong> {v.matricula}</p>
+            <li 
+            key={v.id}>Matrícula: {v.matricula} — Usuario: {v.usuario}
             </li>
           ))}
         </ul>
