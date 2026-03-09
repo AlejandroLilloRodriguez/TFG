@@ -7,7 +7,7 @@ import Home from "./pages/Home";
 import Simulador from "./pages/Simulador";
 import Reservas from "./pages/MisReservas";
 import Vehiculos from "./pages/Vehiculos";
-import Solicitar from "./pages/SolicitarReserva";
+import Solicitar from "./pages/SolicitarReservas";
 
 function Index({ token }) {
   return token ? <Home /> : <Login />;

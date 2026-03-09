@@ -2,7 +2,7 @@ from rest_framework.permissions import BasePermission
 
 class EsAdminUsuarioPermiso(BasePermission):
 
-    def has_permission(self, request):
+    def has_permission(self, request, view):
         user = request.user
         return bool(
             user
