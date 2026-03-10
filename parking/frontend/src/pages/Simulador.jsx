@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { api } from "../api/Cliente";
+import "./css/Simulador.css";
 
 export default function Simulador() {
     const [matricula, setMatricula] = useState("");
@@ -35,30 +36,103 @@ export default function Simulador() {
         setCargando(false);
     }
     return (
-        <div className="simulador-container">
-            <h1>Simulador de Entrada/Salida</h1>
-            <input
-                type="text"
-                placeholder="Matrícula"
-                value={matricula}
-                onChange={(e) => setMatricula(e.target.value)}
-            />
-            <div className="buttons">
-                <button onClick={entrada} disabled={cargando}>Simular Entrada</button>
-                <button onClick={salida} disabled={cargando}>Simular Salida</button>
-            </div>
-            {respuesta && (
-                <div className="respuesta">
-                    {respuesta.error ? (
-                        <p style={{ color: "red" }}>{respuesta.error}</p>
-                    ) : (
-                        <div>
-                            <p>Simulación exitosa:</p>
-                            <pre>{JSON.stringify(respuesta, null, 2)}</pre>
-                        </div>
-                    )}
-                </div>
-            )}
+    <section className="simulador-page">
+      <div className="simulador-hero">
+        <span className="simulador-badge">Panel de simulación</span>
+        <h1 className="simulador-title">Simulador de Entrada y Salida</h1>
+        <p className="simulador-description">
+          Prueba el flujo de acceso de vehículos introduciendo una matrícula y
+          simulando su entrada o salida del parking.
+        </p>
+      </div>
+
+      <div className="simulador-card">
+        <div className="simulador-form-header">
+          <span className="simulador-form-badge">Control de accesos</span>
+          <h2>Simular lectura de matrícula</h2>
+          <p>
+            Introduce una matrícula y ejecuta una simulación de entrada o de
+            salida.
+          </p>
         </div>
+
+        <div className="simulador-form">
+          <div className="simulador-input-group">
+            <label htmlFor="matricula">Matrícula</label>
+            <input
+              id="matricula"
+              type="text"
+              placeholder="Ej. 1234ABC"
+              value={matricula}
+              onChange={(e) => setMatricula(e.target.value.toUpperCase())}
+            />
+          </div>
+
+          <div className="simulador-buttons">
+            <button
+              className="simulador-primary-button"
+              onClick={entrada}
+              disabled={cargando || !matricula.trim()}
+            >
+              Simular entrada
+            </button>
+
+            <button
+              className="simulador-secondary-button"
+              onClick={salida}
+              disabled={cargando || !matricula.trim()}
+            >
+              Simular salida
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {cargando && (
+        <div className="simulador-message">
+          <p>Procesando simulación...</p>
+        </div>
+      )}
+
+      {respuesta && (
+        <div
+          className={`simulador-response ${
+            respuesta.tipo === "error"
+              ? "simulador-response-error"
+              : "simulador-response-success"
+          }`}
+        >
+          <div className="simulador-response-header">
+            <span className="simulador-response-badge">
+              {respuesta.tipo === "error" ? "Error" : "Simulación completada"}
+            </span>
+
+            <h3>
+              {respuesta.tipo === "error"
+                ? `No se pudo simular la ${respuesta.accion}`
+                : `Simulación de ${respuesta.accion} realizada correctamente`}
+            </h3>
+          </div>
+
+          {respuesta.tipo === "error" ? (
+            <p className="simulador-response-text">
+              {respuesta.data?.error ||
+                respuesta.data?.detail ||
+                "Ha ocurrido un error inesperado."}
+            </p>
+          ) : (
+            <div className="simulador-response-content">
+              <p className="simulador-response-text">
+                La operación se ha ejecutado correctamente.
+              </p>
+
+              <div className="simulador-json-box">
+                <pre>{JSON.stringify(respuesta.data, null, 2)}</pre>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+    </section>
     );
 }

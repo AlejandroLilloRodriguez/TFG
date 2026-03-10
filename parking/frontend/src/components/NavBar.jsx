@@ -6,12 +6,14 @@ import Home from "../pages/Home";
 import Simulador from "../pages/Simulador";
 import Reservas from "../pages/MisReservas";
 import Vehiculos from "../pages/Vehiculos";
-import Solicitar from "../pages/SolicitarReservas";
+import Solicitar from "../pages/Solicitarreservas";
+import PanelAdmin from "../pages/PanelAdmin";
 import "./NavBar.css";
 
-export default function AppLayout({ token, setToken }) {
+export default function AppLayout({ token, setToken, user }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const location = useLocation();
+  console.log("Rol del usuario:", user?.rol);
 
   const isLoginPage = location.pathname === "/login";
 
@@ -89,6 +91,17 @@ export default function AppLayout({ token, setToken }) {
               >
                 Solicitar Reserva
               </NavLink>
+              {user?.rol === "ADMIN" && (
+                <NavLink
+                  to="/admin"
+                  onClick={closeMenu}
+                  className={({ isActive }) =>
+                    isActive ? "nav-link active-link" : "nav-link"
+                  }
+                >
+                  Panel de Administración
+                </NavLink>
+              )}
             </nav>
           </aside>
 
@@ -154,6 +167,17 @@ export default function AppLayout({ token, setToken }) {
               </ProtectedPage>
             }
           />
+          {user?.rol === "ADMIN" && (
+            <Route
+              path="/admin"
+              element={
+                <ProtectedPage>
+                  <PanelAdmin />
+                </ProtectedPage>
+              }
+            />
+          )}
+          <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </main>
     </div>
