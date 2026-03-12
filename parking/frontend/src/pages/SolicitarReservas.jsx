@@ -1,46 +1,77 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { api } from "../api/Cliente";
 import "./css/Solicitarresevas.css";
 
 export default function SolicitarReservas() {
-    const [fechaInicio, setFechaInicio] = useState("");
-    const [fechaFinal, setFechaFinal] = useState("");
-    const [respuesta, setRespuesta] = useState(null);
-    const [cargando, setCargando] = useState(false);
-    const [vehiculo, setVehiculo] = useState("");
-    async function solicitarReserva() {
+  const [fechaInicio, setFechaInicio] = useState("");
+  const [fechaFinal, setFechaFinal] = useState("");
+  const [vehiculo, setVehiculo] = useState("");
+  const [vehiculos, setVehiculos] = useState([]);
+  const [respuesta, setRespuesta] = useState(null);
+  const [cargando, setCargando] = useState(false);
+
+  useEffect(() => {
+    async function cargarVehiculos() {
+      try {
+        const res = await api.get("/api/vehiculos/");
+        setVehiculos(res.data);
+      } catch (err) {
+        console.log(err.response);
+      }
+    }
+
+    cargarVehiculos();
+  }, []);
+
+  async function solicitarReserva() {
     setCargando(true);
     setRespuesta(null);
 
     if (!fechaInicio || !fechaFinal || !vehiculo) {
-        setRespuesta({ error: "Todos los campos son obligatorios" });
-        setCargando(false);
-        return;
+      setRespuesta({
+        tipo: "error",
+        mensaje: "Todos los campos son obligatorios",
+      });
+      setCargando(false);
+      return;
     }
 
     if (new Date(fechaFinal) <= new Date(fechaInicio)) {
-        setRespuesta({ error: "La fecha final debe ser posterior a la fecha inicial" });
-        setCargando(false);
-        return;
+      setRespuesta({
+        tipo: "error",
+        mensaje: "La fecha final debe ser posterior a la fecha inicial",
+      });
+      setCargando(false);
+      return;
     }
 
     try {
-        const res = await api.post("/api/reservas/", {
-            fechaInicio: new Date(fechaInicio).toISOString(),
-            fechaFinal: new Date(fechaFinal).toISOString(),
-            vehiculo: Number(vehiculo),
-        });
+      const res = await api.post("/api/reservas/", {
+        fechaInicio: new Date(fechaInicio).toISOString(),
+        fechaFinal: new Date(fechaFinal).toISOString(),
+        vehiculo: Number(vehiculo),
+      });
 
-        setRespuesta({ ok: "Reserva creada correctamente", data: res.data });
-
+      setRespuesta({
+        tipo: "ok",
+        mensaje: "Reserva creada correctamente",
+        data: res.data,
+      });
     } catch (err) {
-        console.log(err.response);
-        setRespuesta(err.response?.data ?? { error: err.message });
+      console.log(err.response);
+      setRespuesta({
+        tipo: "error",
+        mensaje:
+          err.response?.data?.detail ||
+          "Error al crear la reserva",
+        data: err.response?.data,
+      });
     }
 
     setCargando(false);
-}
-    return (
+  }
+
+  return (
     <section className="solicitud-page">
       <div className="solicitud-hero">
         <span className="solicitud-badge">Panel de solicitudes</span>
@@ -56,8 +87,8 @@ export default function SolicitarReservas() {
           <span className="solicitud-form-badge">Nueva reserva</span>
           <h2>Completa los datos</h2>
           <p>
-            Introduce la fecha de inicio, la fecha de finalización y el ID del
-            vehículo.
+            Introduce la fecha de inicio, la fecha de finalización y selecciona
+            el vehículo asociado.
           </p>
         </div>
 
@@ -85,14 +116,19 @@ export default function SolicitarReservas() {
           </div>
 
           <div className="solicitud-input-group">
-            <label htmlFor="vehiculo">Vehículo</label>
-            <input
+            <label htmlFor="vehiculo">Vehículo (matrícula)</label>
+            <select
               id="vehiculo"
-              type="text"
-              placeholder="ID del vehículo"
               value={vehiculo}
               onChange={(e) => setVehiculo(e.target.value)}
-            />
+            >
+              <option value="">Selecciona un vehículo</option>
+              {vehiculos.map((v) => (
+                <option key={v.id} value={v.id}>
+                  {v.matricula}
+                </option>
+              ))}
+            </select>
           </div>
 
           <button

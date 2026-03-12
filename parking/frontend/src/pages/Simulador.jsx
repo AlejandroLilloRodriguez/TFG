@@ -7,34 +7,51 @@ export default function Simulador() {
     const [respuesta, setRespuesta] = useState(null);
     const [cargando, setCargando] = useState(false);
     async function entrada() {
-        setCargando(true);
-        setRespuesta(null);
-        try{
-            const res = await api.post("/api/lecturas/entrada/", {
-                matricula: matricula,
-            });
-            setRespuesta(res.data);
-        } catch (err) {
-            console.log(err.response);
-            setRespuesta(err.response?.data ?? { error: err.message });
-        
-        }
-        setCargando(false);
-    }
+      setCargando(true);
+      setRespuesta(null);
+      try {
+        const res = await api.post("/api/lecturas/entrada/", {
+          matricula: matricula,
+        });
+
+        setRespuesta({
+          tipo: "ok",
+          accion: "entrada",
+          data: res.data,
+        });
+      } catch (err) {
+        console.log(err.response);
+        setRespuesta({
+          tipo: "error",
+          accion: "entrada",
+          data: err.response?.data ?? { error: err.message },
+        });
+      }
+  setCargando(false);
+}
     async function salida() {
-        setCargando(true);
-        setRespuesta(null);
-        try{
-            const res = await api.post("/api/lecturas/salida/", {
-                matricula: matricula,
-            });
-            setRespuesta(res.data);
-        } catch (err) {
-            console.log(err.response);
-            setRespuesta(err.response?.data ?? { error: err.message });
-        }
-        setCargando(false);
-    }
+      setCargando(true);
+      setRespuesta(null);
+      try {
+        const res = await api.post("/api/lecturas/salida/", {
+          matricula: matricula,
+        });
+
+        setRespuesta({
+          tipo: "ok",
+          accion: "salida",
+          data: res.data,
+        });
+      } catch (err) {
+        console.log(err.response);
+        setRespuesta({
+          tipo: "error",
+          accion: "salida",
+          data: err.response?.data ?? { error: err.message },
+        });
+  }
+  setCargando(false);
+}
     return (
     <section className="simulador-page">
       <div className="simulador-hero">
