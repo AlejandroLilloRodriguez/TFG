@@ -1,17 +1,15 @@
-from django.shortcuts import render
 from rest_framework import viewsets
-from .models import InformesUso
-from .serializer import InformeSerializer
 from rest_framework.permissions import IsAuthenticated
+from usuarios.models import Usuario
+from .serializer import InformeSerializer
 
-class InformeViewSet(viewsets.ModelViewSet):
+
+class InformeViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = InformeSerializer
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         user = self.request.user
         if getattr(user, "rol", None) == "ADMIN":
-            return InformesUso.objects.all()
-        return InformesUso.objects.filter(usuario=user)
-
-# Create your views here.
+            return Usuario.objects.all()
+        return Usuario.objects.filter(id=user.id)

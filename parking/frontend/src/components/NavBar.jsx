@@ -8,6 +8,8 @@ import Reservas from "../pages/MisReservas";
 import Vehiculos from "../pages/Vehiculos";
 import Solicitar from "../pages/Solicitarreservas";
 import PanelAdmin from "../pages/PanelAdmin";
+import Informes from "../pages/Informes";
+import DetalleInforme from "../pages/DetalleInforme";
 import "./NavBar.css";
 
 export default function AppLayout({ token, setToken, user }) {
@@ -102,7 +104,18 @@ export default function AppLayout({ token, setToken, user }) {
                   Panel de Administración
                 </NavLink>
               )}
+              <NavLink
+                to="/informes"
+                onClick={closeMenu}
+                className={({ isActive }) =>
+                  isActive ? "nav-link active-link" : "nav-link"
+                }
+              >
+                Informes
+              </NavLink>
+              
             </nav>
+
           </aside>
 
           <header className="topbar">
@@ -176,7 +189,24 @@ export default function AppLayout({ token, setToken, user }) {
                 </ProtectedPage>
               }
             />
+
           )}
+          <Route
+            path="/informes"
+            element={
+              <ProtectedPage>
+                <Informes />
+              </ProtectedPage>
+            }
+          />
+          <Route
+            path="/informes/:id"
+            element={
+              <ProtectedPage>
+                <DetalleInforme />
+              </ProtectedPage>
+            }
+          />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </main>
