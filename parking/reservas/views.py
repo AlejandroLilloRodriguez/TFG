@@ -26,11 +26,23 @@ class ReservaViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         user = self.request.user
-        if getattr(user, "rol", None) == "ADMIN":
-            return Reserva.objects.all()
-        return Reserva.objects.filter(usuario=user)
-    
 
+        if getattr(user, "rol", None) == "ADMIN":
+            queryset = Reserva.objects.all()
+        else:
+            queryset = Reserva.objects.filter(usuario=user)
+
+        fecha_inicio = self.request.query_params.get("fecha_inicio")
+        fecha_fin = self.request.query_params.get("fecha_fin")
+
+        if fecha_inicio:
+            queryset = queryset.filter(fechaInicio__date__gte=fecha_inicio)
+
+        if fecha_fin:
+            queryset = queryset.filter(fechaInicio__date__lte=fecha_fin)
+
+        return queryset.order_by("-fechaInicio")
+    
     @action(detail=True, methods=["post"])
     def cancelar(self, request, pk=None):
         reserva = self.get_object()
