@@ -8,6 +8,7 @@ class InformesUso(models.Model):
     )
     totalReservas = models.IntegerField(default=0)
     reservasUsadas  = models.IntegerField(default = 0)
+    reservasCanceladas = models.IntegerField(default = 0)
     noshows = models.IntegerField(default = 0)
     porcentajeDeUso = models.FloatField(default=0.0)
     fechaCreacion = models.DateTimeField(auto_now_add=True)

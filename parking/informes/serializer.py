@@ -8,6 +8,7 @@ class InformeSerializer(serializers.ModelSerializer):
     reservasUsadas = serializers.SerializerMethodField()
     noshows = serializers.SerializerMethodField()
     porcentajeDeUso = serializers.SerializerMethodField()
+    reservasCanceladas = serializers.SerializerMethodField()
 
     class Meta:
         model = Usuario
@@ -15,6 +16,7 @@ class InformeSerializer(serializers.ModelSerializer):
             "id",
             "username",
             "totalReservas",
+            "reservasCanceladas",
             "reservasUsadas",
             "noshows",
             "porcentajeDeUso",
@@ -22,6 +24,8 @@ class InformeSerializer(serializers.ModelSerializer):
 
     def get_totalReservas(self, obj):
         return Reserva.objects.filter(usuario=obj).exclude(estado=Estado.CANCELADA).count()
+    def get_reservasCanceladas(self, obj):
+        return Reserva.objects.filter(usuario=obj, estado=Estado.CANCELADA).count()
 
     def get_reservasUsadas(self, obj):
         return Reserva.objects.filter(usuario=obj, estado=Estado.FINALIZADA).count()

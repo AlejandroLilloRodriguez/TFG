@@ -55,6 +55,9 @@ export default function DetalleInforme() {
           <p>
             <strong>Reservas usadas:</strong> {informe.reservasUsadas}
           </p>
+          <p>
+            <strong>Reservas canceladas:</strong> {informe.reservasCanceladas}
+          </p>
 
           <p>
             <strong>No-shows:</strong> {informe.noshows}
