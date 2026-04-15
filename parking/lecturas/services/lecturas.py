@@ -6,7 +6,8 @@ from lecturas.models import LecturaMatricula
 
 class LecturasService:
     def leerMatricula(self, matricula, fecha):
-        vehiculo = Vehiculo.objects.filter(matricula=matricula).first()
+        matricula = matricula.strip().upper()
+        vehiculo = Vehiculo.objects.filter(matricula__iexact=matricula).first()
 
         if not vehiculo:
             LecturaMatricula.objects.create(
@@ -18,7 +19,7 @@ class LecturasService:
 
         reserva = Reserva.objects.filter(
             vehiculo=vehiculo,
-            fechaInicio__date=fecha,
+            fechaInicio__date=fecha.date(),
             estado=Estado.ASIGNADA,
         ).select_related("plaza", "plaza__planta").first()
 
@@ -49,8 +50,9 @@ class LecturasService:
         }
 
 
-    def registrarSalida(self, matricula, fecha):
-        vehiculo = Vehiculo.objects.filter(matricula=matricula).first()
+    def registrarSalida(self, matricula, fecha = None):
+        matricula = matricula.strip().upper()
+        vehiculo = Vehiculo.objects.filter(matricula__iexact=matricula).first()
 
         if not vehiculo:
             LecturaMatricula.objects.create(
@@ -62,9 +64,8 @@ class LecturasService:
 
         reserva = Reserva.objects.filter(
             vehiculo=vehiculo,
-            fechaInicio__date=fecha,
             estado=Estado.OCUPADA,
-        ).select_related("plaza").first()
+        ).select_related("plaza").order_by("-fechaInicio").first()
 
         if not reserva:
             LecturaMatricula.objects.create(
@@ -77,7 +78,6 @@ class LecturasService:
         reserva.estado = Estado.FINALIZADA
         reserva.save(update_fields=["estado"])
 
-    
         if reserva.plaza_id is not None:
             plaza = reserva.plaza
             plaza.disponible = True

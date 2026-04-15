@@ -88,10 +88,10 @@ export default function Simulador() {
             />
           </div>
           <div className="simulador-input-group">
-            <label htmlFor="fecha">Fecha</label>
+            <label htmlFor="fecha">Fecha y hora</label>
             <input
               id="fecha"
-              type="date"
+              type="datetime-local"
               value={fecha}
               onChange={(e) => setFecha(e.target.value)}
             />
