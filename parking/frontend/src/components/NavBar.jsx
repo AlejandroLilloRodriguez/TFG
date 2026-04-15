@@ -83,7 +83,7 @@ export default function AppLayout({ token, setToken, user }) {
               >
                 Mis Vehículos
               </NavLink>
-              {user?.rol === "CLIENTE" && (  
+              {user?.rol === "EMPLEADO" && (  
               <NavLink
                 to="/solicitar"
                 onClick={closeMenu}

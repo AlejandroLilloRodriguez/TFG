@@ -3,7 +3,7 @@ from rest_framework import viewsets
 from .models import Reserva, Estado
 from .serializer import ReservaSerializer
 from rest_framework.response import Response
-from rest_framework import status
+from rest_framework import status, serializers
 from rest_framework.views import APIView
 from .serializer import AsignacionRequestSerializer
 from .services.algoritmodeasignacion import AlgoritmoDeAsignacion
@@ -42,7 +42,7 @@ class ReservaViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(fechaInicio__date__lte=fecha_fin)
 
         return queryset.order_by("-fechaInicio")
-    
+
     @action(detail=True, methods=["post"])
     def cancelar(self, request, pk=None):
         reserva = self.get_object()
@@ -65,6 +65,17 @@ class ReservaViewSet(viewsets.ModelViewSet):
         return Response({"detail": "Reserva cancelada correctamente."}, status=status.HTTP_200_OK)
     
     def perform_create(self, serializer):
+        usuario = self.request.user
+        fecha_inicio = serializer.validated_data.get("fechaInicio")
+
+        existe_reserva = Reserva.objects.filter(
+            usuario=usuario,
+            fechaInicio__date=fecha_inicio.date(),
+        ).exclude(estado__in=[Estado.CANCELADA, Estado.FINALIZADA]).exists()
+
+        if existe_reserva:
+            raise serializers.ValidationError({"detail": "Ya tienes una reserva para ese día."})
+        
         serializer.save(usuario=self.request.user, estado=Estado.PENDIENTE)
     
         
