@@ -163,7 +163,7 @@
   transform: translateY(-1px);
 }
 
-/* ================= FILTROS (MEJORADOS) ================= */
+
 
 .reservas-filtros {
   display: flex;
@@ -267,7 +267,7 @@
   transform: translateY(-1px);
 }
 
-/* ================= RESPONSIVE ================= */
+
 
 @media (max-width: 980px) {
   .reservas-grid {

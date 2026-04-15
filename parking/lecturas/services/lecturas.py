@@ -1,12 +1,11 @@
-from django.utils import timezone
+
 from vehiculo.models import Vehiculo
 from reservas.models import Reserva, Estado
 from lecturas.models import LecturaMatricula
 
 
 class LecturasService:
-    def leerMatricula(self, matricula):
-        fecha = timezone.now().date()
+    def leerMatricula(self, matricula, fecha):
         vehiculo = Vehiculo.objects.filter(matricula=matricula).first()
 
         if not vehiculo:
@@ -50,8 +49,7 @@ class LecturasService:
         }
 
 
-    def registrarSalida(self, matricula):
-        fecha = timezone.now().date()
+    def registrarSalida(self, matricula, fecha):
         vehiculo = Vehiculo.objects.filter(matricula=matricula).first()
 
         if not vehiculo:

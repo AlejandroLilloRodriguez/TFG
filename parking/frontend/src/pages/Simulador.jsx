@@ -4,6 +4,7 @@ import "./css/Simulador.css";
 
 export default function Simulador() {
     const [matricula, setMatricula] = useState("");
+    const [fecha, setFecha] = useState("");
     const [respuesta, setRespuesta] = useState(null);
     const [cargando, setCargando] = useState(false);
     async function entrada() {
@@ -12,6 +13,7 @@ export default function Simulador() {
       try {
         const res = await api.post("/api/lecturas/entrada/", {
           matricula: matricula,
+          fecha: fecha,
         });
 
         setRespuesta({
@@ -35,6 +37,7 @@ export default function Simulador() {
       try {
         const res = await api.post("/api/lecturas/salida/", {
           matricula: matricula,
+          fecha: fecha,
         });
 
         setRespuesta({
@@ -68,8 +71,8 @@ export default function Simulador() {
           <span className="simulador-form-badge">Control de accesos</span>
           <h2>Simular lectura de matrícula</h2>
           <p>
-            Introduce una matrícula y ejecuta una simulación de entrada o de
-            salida.
+           Introduce una matrícula y una fecha para ejecutar una simulación de
+            entrada o de salida.
           </p>
         </div>
 
@@ -84,6 +87,16 @@ export default function Simulador() {
               onChange={(e) => setMatricula(e.target.value.toUpperCase())}
             />
           </div>
+          <div className="simulador-input-group">
+            <label htmlFor="fecha">Fecha</label>
+            <input
+              id="fecha"
+              type="date"
+              value={fecha}
+              onChange={(e) => setFecha(e.target.value)}
+            />
+          </div>
+
 
           <div className="simulador-buttons">
             <button

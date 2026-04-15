@@ -13,7 +13,8 @@ class EntradaApiView(APIView):
         serializer = MatriculaRequestSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         matricula = serializer.validated_data["matricula"]
-        data = LecturasService().leerMatricula(matricula)
+        fecha = serializer.validated_data["fecha"]
+        data = LecturasService().leerMatricula(matricula, fecha)
         return Response({"resultado": data})
 
 
@@ -24,5 +25,6 @@ class SalidaApiView(APIView):
         serializer = MatriculaRequestSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         matricula = serializer.validated_data["matricula"]
-        data = LecturasService().registrarSalida(matricula)
+        fecha = serializer.validated_data["fecha"]
+        data = LecturasService().registrarSalida(matricula, fecha)
         return Response({"resultado": data})
