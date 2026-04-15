@@ -6,7 +6,6 @@ export default function Vehiculos() {
   const [vehiculos, setVehiculos] = useState([]);
   const [cargando, setCargando] = useState(false);
   const [error, setError] = useState(null);
-
   const [matricula, setMatricula] = useState("");
 
   async function cargarVehiculos() {
@@ -34,17 +33,27 @@ export default function Vehiculos() {
       await api.post("/api/vehiculos/", {
         matricula,
       });
-      await cargarVehiculos();
 
-
-   
       setMatricula("");
-      
-
-      
       await cargarVehiculos();
     } catch (err) {
-      console.log("Error");
+      console.log("ERROR crear vehiculo:", err.response ?? err);
+      setError(err.response?.data?.detail ?? "Error al crear vehículo");
+    } finally {
+      setCargando(false);
+    }
+  }
+
+  async function eliminarVehiculo(id) {
+    setCargando(true);
+    setError(null);
+
+    try {
+      await api.delete(`/api/vehiculos/${id}/`);
+      setVehiculos((prev) => prev.filter((v) => v.id !== id));
+    } catch (err) {
+      console.log("ERROR eliminar vehiculo:", err.response ?? err);
+      setError(err.response?.data?.detail ?? "Error al eliminar vehículo");
     } finally {
       setCargando(false);
     }
@@ -130,10 +139,18 @@ export default function Vehiculos() {
               <div className="vehiculo-info">
                 <div className="vehiculo-info-item">
                   <span className="info-label">Usuario</span>
-                  <p>
-                    {v.usuario}
-                  </p>
+                  <p>{v.usuario}</p>
                 </div>
+              </div>
+
+              <div className="vehiculo-actions">
+                <button
+                  className="vehiculo-delete-button"
+                  onClick={() => eliminarVehiculo(v.id)}
+                  disabled={cargando}
+                >
+                  Eliminar
+                </button>
               </div>
             </article>
           ))}
@@ -142,4 +159,3 @@ export default function Vehiculos() {
     </section>
   );
 }
-

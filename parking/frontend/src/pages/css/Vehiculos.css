@@ -292,3 +292,33 @@
     grid-template-columns: 1fr;
   }
 }
+.vehiculo-actions {
+  margin-top: 18px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.vehiculo-delete-button {
+  min-width: 140px;
+  height: 42px;
+  padding: 0 16px;
+  border: 1px solid rgba(255, 99, 99, 0.28);
+  border-radius: 12px;
+  background: rgba(255, 99, 99, 0.1);
+  color: #ff9a9a;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.vehiculo-delete-button:hover {
+  background: rgba(255, 99, 99, 0.18);
+  transform: translateY(-1px);
+}
+
+.vehiculo-delete-button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none;
+}
