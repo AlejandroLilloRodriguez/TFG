@@ -11,6 +11,7 @@ class Estado(models.TextChoices):
     FINALIZADA = "FINALIZADA", "Finalizada"
     CANCELADA = "CANCELADA", "Cancelada"
     NO_SHOW = "NO_SHOW", "No se presentó"
+    SALIDA_NO_REGISTRADA = "SALIDA_NO_REGISTRADA", "Salida no registrada"
 
 class Reserva(models.Model):
     fechaInicio = models.DateTimeField()
