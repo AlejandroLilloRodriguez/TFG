@@ -105,16 +105,16 @@ class EjecutarNoShowApiView(APIView):
         serializer.is_valid(raise_exception=True)
 
         fecha = serializer.validated_data["fecha"]
-        hora_limite = serializer.validated_data["hora_limite"]
+        horaLimite = serializer.validated_data["horaLimite"]
 
-        dt_limite = timezone.make_aware(datetime.combine(fecha, hora_limite))
+        dt_limite = timezone.make_aware(datetime.combine(fecha, horaLimite))
 
         
         if timezone.now() < dt_limite:
             return Response(
                 {
                     "detail": "Aún no se ha alcanzado la hora límite.",
-                    "hora_limite": str(hora_limite),
+                    "horaLimite": str(horaLimite),
                     "fecha": str(fecha),
                 },
                 status=status.HTTP_200_OK,

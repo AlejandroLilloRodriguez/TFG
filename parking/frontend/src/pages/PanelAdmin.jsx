@@ -31,7 +31,7 @@ export default function PanelAdmin() {
         try {
             const res = await api.post("/api/ejecutar-no-show/", {
                 fecha,
-                hora_limite,
+                horaLimite
             });
             setResultadoNoShow(res.data);
         }
