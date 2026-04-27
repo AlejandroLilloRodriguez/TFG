@@ -22,7 +22,7 @@ class AlgoritmoDeAsignacion:
         reservas = list(
             Reserva.objects.filter(
                 estado=Estado.PENDIENTE,
-                fechaInicio__date=fechaActual,
+                fecha=fechaActual,
             ).order_by("id")
         )
 

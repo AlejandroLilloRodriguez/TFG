@@ -14,8 +14,7 @@ class Estado(models.TextChoices):
     SALIDA_NO_REGISTRADA = "SALIDA_NO_REGISTRADA", "Salida no registrada"
 
 class Reserva(models.Model):
-    fechaInicio = models.DateTimeField()
-    fechaFinal = models.DateTimeField()
+    fecha = models.DateField()
 
     estado = models.CharField(max_length=20, choices=Estado.choices, default=Estado.PENDIENTE)
 
@@ -31,5 +30,4 @@ class Reserva(models.Model):
     )
 
     def __str__(self):
-        return f"Reserva {self.usuario.username} {self.fechaInicio} ({self.estado})"
-
+        return f"Reserva {self.usuario.username} {self.fecha} ({self.estado})"

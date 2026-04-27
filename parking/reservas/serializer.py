@@ -1,15 +1,13 @@
 from rest_framework import serializers
 from reservas.models import Reserva
 
-
 class ReservaSerializer(serializers.ModelSerializer):
     usuario = serializers.CharField(source="usuario.username", read_only=True)
     class Meta:
         model = Reserva
         fields = [
             "id",
-            "fechaInicio",
-            "fechaFinal",
+            "fecha",
             "estado",
             "usuario",
             "vehiculo",
@@ -24,7 +22,3 @@ class AsignacionRequestSerializer(serializers.Serializer):
 class NoShowRequestSerializer(serializers.Serializer):
     fecha = serializers.DateField()
     horaLimite = serializers.TimeField()
-
-
-
-
