@@ -8,7 +8,7 @@ class AlgoritmoDeAsignacion:
     def clacularScore(self, usuario):
         informe = InformesUso.objects.filter(usuario=usuario).order_by("-fechaCreacion").first()
         if not informe:
-            return 100
+            return 0
         score = 0
         score += informe.noshows * 20
         score += informe.totalReservas * 5
