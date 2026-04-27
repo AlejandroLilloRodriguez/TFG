@@ -4,7 +4,7 @@ from .models import LecturaMatricula
 
 class MatriculaRequestSerializer(serializers.Serializer):
     matricula = serializers.CharField(max_length=15)
-    fecha = serializers.DateTimeField()
+    fecha = serializers.DateField()
 
 
 class LecturaSerializer(serializers.ModelSerializer):

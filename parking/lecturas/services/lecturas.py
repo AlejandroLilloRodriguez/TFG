@@ -38,7 +38,7 @@ class LecturasService:
 
         reserva = Reserva.objects.filter(
             vehiculo=vehiculo,
-            fechaInicio__date=fecha.date(),
+            fecha=fecha,
             estado=Estado.ASIGNADA,
         ).select_related("plaza", "plaza__planta").first()
 
@@ -83,7 +83,7 @@ class LecturasService:
         reserva = Reserva.objects.filter(
             vehiculo=vehiculo,
             estado=Estado.OCUPADA,
-        ).select_related("plaza").order_by("-fechaInicio").first()
+        ).select_related("plaza").order_by("-fecha").first()
 
         if not reserva:
             LecturaMatricula.objects.create(
@@ -116,7 +116,7 @@ class LecturasService:
         ).select_related("plaza")
 
         if fecha_limite is not None:
-            reservas = reservas.filter(fechaInicio__date__lte=fecha_limite)
+            reservas = reservas.filter(fecha__lte=fecha_limite)
 
         cerradas = 0
         plazas_liberadas = 0

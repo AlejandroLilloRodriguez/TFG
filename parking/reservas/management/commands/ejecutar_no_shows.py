@@ -28,7 +28,7 @@ class Command(BaseCommand):
             return
 
         reservas = Reserva.objects.filter(
-            fechaInicio__date=fecha,
+            fecha=fecha,
             estado=Estado.ASIGNADA,
         ).select_related("plaza")
 
