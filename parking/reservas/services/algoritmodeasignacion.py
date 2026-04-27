@@ -1,19 +1,23 @@
-from informes.models import InformesUso
 from reservas.models import Reserva, Estado
 from plazas.models import Plaza
 
 
 class AlgoritmoDeAsignacion:
 
-    def clacularScore(self, usuario):
-        informe = InformesUso.objects.filter(usuario=usuario).order_by("-fechaCreacion").first()
-        if not informe:
-            return 0
+    def calcularScore(self, usuario):
+        reservas = Reserva.objects.filter(usuario=usuario).exclude(
+            estado=Estado.CANCELADA
+        )
+
+        total_reservas = reservas.count()
+        no_shows = reservas.filter(estado=Estado.NO_SHOW).count()
+        usadas = reservas.filter(estado=Estado.FINALIZADA).count()
+
         score = 0
-        score += informe.noshows * 20
-        score += informe.totalReservas * 5
-        diasSinUsar = (informe.periodoFinal - informe.periodoInicio).days
-        score -= diasSinUsar
+        score += total_reservas * 5
+        score += no_shows * 20
+        score -= usadas * 3
+
         return score
 
     def asignarReserva(self, fechaActual):
@@ -21,22 +25,22 @@ class AlgoritmoDeAsignacion:
             Reserva.objects.filter(
                 estado=Estado.PENDIENTE,
                 fechaInicio__date=fechaActual,
-            )
+            ).order_by("id")
         )
-        reservas.sort(key=lambda r: self.clacularScore(r.usuario))
 
-        
+        reservas.sort(key=lambda r: self.calcularScore(r.usuario))
+
         plazas_libres = list(Plaza.objects.filter(disponible=True).order_by("id"))
 
         asignadas = 0
         no_asignadas = 0
 
-       
         for reserva in reservas:
             if plazas_libres:
                 plaza = plazas_libres.pop(0)
                 plaza.disponible = False
                 plaza.save(update_fields=["disponible"])
+
                 reserva.estado = Estado.ASIGNADA
                 reserva.plaza = plaza
                 reserva.save(update_fields=["estado", "plaza"])
