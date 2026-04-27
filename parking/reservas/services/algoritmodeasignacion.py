@@ -5,18 +5,16 @@ from plazas.models import Plaza
 class AlgoritmoDeAsignacion:
 
     def calcularScore(self, usuario):
-        reservas = Reserva.objects.filter(usuario=usuario).exclude(
-            estado=Estado.CANCELADA
-        )
+        reservas = Reserva.objects.filter(usuario=usuario)
 
-        total_reservas = reservas.count()
+        reservas_usadas = reservas.filter(estado=Estado.FINALIZADA).count()
         no_shows = reservas.filter(estado=Estado.NO_SHOW).count()
-        usadas = reservas.filter(estado=Estado.FINALIZADA).count()
+        reservas_canceladas = reservas.filter(estado=Estado.CANCELADA).count()
 
         score = 0
-        score += total_reservas * 5
-        score += no_shows * 20
-        score -= usadas * 3
+        score += reservas_usadas * 10
+        score += no_shows * 30
+        score += reservas_canceladas * 2
 
         return score
 
@@ -28,9 +26,11 @@ class AlgoritmoDeAsignacion:
             ).order_by("id")
         )
 
-        reservas.sort(key=lambda r: self.calcularScore(r.usuario))
+        reservas.sort(key=lambda r: (self.calcularScore(r.usuario), r.id))
 
-        plazas_libres = list(Plaza.objects.filter(disponible=True).order_by("id"))
+        plazas_libres = list(
+            Plaza.objects.filter(disponible=True).order_by("id")
+        )
 
         asignadas = 0
         no_asignadas = 0
@@ -44,10 +44,12 @@ class AlgoritmoDeAsignacion:
                 reserva.estado = Estado.ASIGNADA
                 reserva.plaza = plaza
                 reserva.save(update_fields=["estado", "plaza"])
+
                 asignadas += 1
             else:
                 reserva.estado = Estado.NO_ASIGNADA
                 reserva.save(update_fields=["estado"])
+
                 no_asignadas += 1
 
         return asignadas, no_asignadas
