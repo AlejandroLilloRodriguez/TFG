@@ -118,10 +118,11 @@ class EjecutarNoShowApiView(APIView):
 
         fecha = serializer.validated_data["fecha"]
         horaLimite = serializer.validated_data["horaLimite"]
+        forzar = serializer.validated_data["forzar"]
 
         dt_limite = timezone.make_aware(datetime.combine(fecha, horaLimite))
 
-        if timezone.now() < dt_limite:
+        if not forzar and timezone.now() < dt_limite:
             return Response(
                 {
                     "detail": "Aún no se ha alcanzado la hora límite.",
@@ -154,6 +155,7 @@ class EjecutarNoShowApiView(APIView):
             {
                 "no_shows_marcados": marcadas,
                 "plazas_liberadas": plazas_liberadas,
+                "forzar": forzar,
             },
             status=status.HTTP_200_OK,
         )

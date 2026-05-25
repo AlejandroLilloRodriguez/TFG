@@ -22,3 +22,4 @@ class AsignacionRequestSerializer(serializers.Serializer):
 class NoShowRequestSerializer(serializers.Serializer):
     fecha = serializers.DateField()
     horaLimite = serializers.TimeField()
+    forzar = serializers.BooleanField(default=False, required=False)

@@ -16,7 +16,7 @@ export default function PanelAdmin() {
         setResultadoAsignacion(null);
         try {
             const res = await api.post("/api/ejecutar-asignacion/", {
-                fecha
+                fecha,
             });
             setResultadoAsignacion(res.data);
         } catch (err) {
@@ -31,7 +31,8 @@ export default function PanelAdmin() {
         try {
             const res = await api.post("/api/ejecutar-no-show/", {
                 fecha,
-                horaLimite
+                horaLimite,
+                forzar: true,
             });
             setResultadoNoShow(res.data);
         }

@@ -69,12 +69,11 @@ export default function Reservas() {
 
   function formatearFecha(fechaStr) {
     const fecha = new Date(fechaStr);
-    return fecha.toLocaleString("es-ES", {
+
+    return fecha.toLocaleDateString("es-ES", {
       year: "numeric",
       month: "long",
       day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
     });
   }
 
@@ -84,46 +83,45 @@ export default function Reservas() {
         <span className="reservas-badge">Panel de reservas</span>
         <h1 className="reservas-title">Mis Reservas</h1>
         <p className="reservas-description">
-          Consulta el estado de tus reservas, revisa horarios y cancela aquellas
-          que todavía estén activas.
+          Consulta el estado de tus reservas, revisa la fecha asignada y cancela
+          aquellas que todavía estén activas.
         </p>
       </div>
 
-            <div className="reservas-filtros">
-                <div className="filtro-item">
-                    <label>Desde</label>
-                    <input
-                    type="date"
-                    value={fechaInicioFiltro}
-                    onChange={(e) => setFechaInicioFiltro(e.target.value)}
-                    />
-                </div>
-
-                <div className="filtro-item">
-                    <label>Hasta</label>
-                    <input
-                    type="date"
-                    value={fechaFinFiltro}
-                    onChange={(e) => setFechaFinFiltro(e.target.value)}
-                    />
-                </div>
-
-                <div className="filtro-botones">
-                    <button className="filtrar-button" onClick={cargarReservas}>
-                    Filtrar
-                    </button>
-
-                    <button
-                    className="limpiar-button"
-                    onClick={() => {
-                        setFechaInicioFiltro("");
-                        setFechaFinFiltro("");
-                    }}
-                    >
-                    Limpiar
-                    </button>
-                </div>
+      <div className="reservas-filtros">
+        <div className="filtro-item">
+          <label>Desde</label>
+          <input
+            type="date"
+            value={fechaInicioFiltro}
+            onChange={(e) => setFechaInicioFiltro(e.target.value)}
+          />
         </div>
+
+        <div className="filtro-item">
+          <label>Hasta</label>
+          <input
+            type="date"
+            value={fechaFinFiltro}
+            onChange={(e) => setFechaFinFiltro(e.target.value)}
+          />
+        </div>
+
+        <div className="filtro-botones">
+          <button className="filtrar-button" onClick={cargarReservas}>
+            Filtrar
+          </button>
+
+          <button
+            className="limpiar-button"
+            onClick={() => {
+              limpiarFiltros();
+            }}
+          >
+            Limpiar
+          </button>
+        </div>
+      </div>
 
       {cargando && (
         <div className="reservas-message">
@@ -142,7 +140,7 @@ export default function Reservas() {
           <h2>No tienes reservas</h2>
           <p>
             Cuando realices una reserva, aparecerá aquí con su estado, plaza y
-            horario.
+            fecha.
           </p>
         </div>
       )}
@@ -154,19 +152,16 @@ export default function Reservas() {
               <div className="reserva-card-top">
                 <div>
                   <p className="reserva-label">Plaza</p>
-                  <h3 className="reserva-plaza">{reserva.plaza ?? "Sin asignar"}</h3>
+                  <h3 className="reserva-plaza">
+                    {reserva.plaza ?? "Sin asignar"}
+                  </h3>
                 </div>
               </div>
 
               <div className="reserva-info">
                 <div className="reserva-info-item">
-                  <span className="info-label">Entrada</span>
-                  <p>{formatearFecha(reserva.fechaInicio)}</p>
-                </div>
-
-                <div className="reserva-info-item">
-                  <span className="info-label">Salida</span>
-                  <p>{formatearFecha(reserva.fechaFinal)}</p>
+                  <span className="info-label">Fecha</span>
+                  <p>{formatearFecha(reserva.fecha)}</p>
                 </div>
 
                 <div className="reserva-info-item">
@@ -177,6 +172,11 @@ export default function Reservas() {
                 <div className="reserva-info-item">
                   <span className="info-label">Usuario</span>
                   <p>{reserva.usuario}</p>
+                </div>
+
+                <div className="reserva-info-item">
+                  <span className="info-label">Vehículo</span>
+                  <p>{reserva.vehiculo}</p>
                 </div>
               </div>
 

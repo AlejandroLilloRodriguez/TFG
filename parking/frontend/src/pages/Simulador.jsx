@@ -3,59 +3,66 @@ import { api } from "../api/Cliente";
 import "./css/Simulador.css";
 
 export default function Simulador() {
-    const [matricula, setMatricula] = useState("");
-    const [fecha, setFecha] = useState("");
-    const [respuesta, setRespuesta] = useState(null);
-    const [cargando, setCargando] = useState(false);
-    async function entrada() {
-      setCargando(true);
-      setRespuesta(null);
-      try {
-        const res = await api.post("/api/lecturas/entrada/", {
-          matricula: matricula,
-          fecha: fecha,
-        });
+  const [matricula, setMatricula] = useState("");
+  const [fecha, setFecha] = useState("");
+  const [respuesta, setRespuesta] = useState(null);
+  const [cargando, setCargando] = useState(false);
 
-        setRespuesta({
-          tipo: "ok",
-          accion: "entrada",
-          data: res.data,
-        });
-      } catch (err) {
-        console.log(err.response);
-        setRespuesta({
-          tipo: "error",
-          accion: "entrada",
-          data: err.response?.data ?? { error: err.message },
-        });
-      }
-  setCargando(false);
-}
-    async function salida() {
-      setCargando(true);
-      setRespuesta(null);
-      try {
-        const res = await api.post("/api/lecturas/salida/", {
-          matricula: matricula,
-          fecha: fecha,
-        });
+  async function entrada() {
+    setCargando(true);
+    setRespuesta(null);
 
-        setRespuesta({
-          tipo: "ok",
-          accion: "salida",
-          data: res.data,
-        });
-      } catch (err) {
-        console.log(err.response);
-        setRespuesta({
-          tipo: "error",
-          accion: "salida",
-          data: err.response?.data ?? { error: err.message },
-        });
+    try {
+      const res = await api.post("/api/lecturas/entrada/", {
+        matricula,
+        fecha,
+      });
+
+      setRespuesta({
+        tipo: "ok",
+        accion: "entrada",
+        data: res.data,
+      });
+    } catch (err) {
+      console.log(err.response);
+      setRespuesta({
+        tipo: "error",
+        accion: "entrada",
+        data: err.response?.data ?? { error: err.message },
+      });
+    }
+
+    setCargando(false);
   }
-  setCargando(false);
-}
-    return (
+
+  async function salida() {
+    setCargando(true);
+    setRespuesta(null);
+
+    try {
+      const res = await api.post("/api/lecturas/salida/", {
+        matricula,
+        fecha,
+      });
+
+      setRespuesta({
+        tipo: "ok",
+        accion: "salida",
+        data: res.data,
+      });
+    } catch (err) {
+      console.log(err.response);
+      setRespuesta({
+        tipo: "error",
+        accion: "salida",
+        data: err.response?.data ?? { error: err.message },
+      });
+    }
+
+    setCargando(false);
+  }
+
+  return (
     <section className="simulador-page">
       <div className="simulador-hero">
         <span className="simulador-badge">Panel de simulación</span>
@@ -71,7 +78,7 @@ export default function Simulador() {
           <span className="simulador-form-badge">Control de accesos</span>
           <h2>Simular lectura de matrícula</h2>
           <p>
-           Introduce una matrícula y una fecha para ejecutar una simulación de
+            Introduce una matrícula y una fecha para ejecutar una simulación de
             entrada o de salida.
           </p>
         </div>
@@ -87,22 +94,22 @@ export default function Simulador() {
               onChange={(e) => setMatricula(e.target.value.toUpperCase())}
             />
           </div>
+
           <div className="simulador-input-group">
-            <label htmlFor="fecha">Fecha y hora</label>
+            <label htmlFor="fecha">Fecha</label>
             <input
               id="fecha"
-              type="datetime-local"
+              type="date"
               value={fecha}
               onChange={(e) => setFecha(e.target.value)}
             />
           </div>
 
-
           <div className="simulador-buttons">
             <button
               className="simulador-primary-button"
               onClick={entrada}
-              disabled={cargando || !matricula.trim()}
+              disabled={cargando || !matricula.trim() || !fecha}
             >
               Simular entrada
             </button>
@@ -110,7 +117,7 @@ export default function Simulador() {
             <button
               className="simulador-secondary-button"
               onClick={salida}
-              disabled={cargando || !matricula.trim()}
+              disabled={cargando || !matricula.trim() || !fecha}
             >
               Simular salida
             </button>
@@ -164,5 +171,5 @@ export default function Simulador() {
         </div>
       )}
     </section>
-    );
+  );
 }
