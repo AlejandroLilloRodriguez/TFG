@@ -2,7 +2,7 @@ TGF/
 venv/
 .env
 .git/
-db.sqlite3
+parking/db.sqlite3
 __pycache__/
 *.pyc
 .pytest_cache/
