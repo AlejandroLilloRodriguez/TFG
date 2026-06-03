@@ -1,0 +1,11 @@
+TGF/
+venv/
+.env
+*.sqlite3
+db.sqlite3
+parking/db.sqlite3
+__pycache__/
+*.pyc
+.pytest_cache/
+node_modules/
+dist/
