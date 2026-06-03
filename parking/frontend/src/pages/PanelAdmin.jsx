@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { api } from "../api/Cliente";
+import "./css/PanelAdmin.css";
 
 export default function PanelAdmin() {
     const [fecha, setFecha] = useState(() => new Date().toISOString().slice(0, 10)); 

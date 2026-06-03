@@ -1,0 +1,17 @@
+services:
+  backend:
+    build: ./parking
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./parking:/app
+
+  frontend:
+    build: ./parking/frontend
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./parking/frontend:/app
+      - /app/node_modules
+    depends_on:
+      - backend
