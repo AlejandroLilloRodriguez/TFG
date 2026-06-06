@@ -13,7 +13,7 @@ class AlgoritmoDeAsignacion:
 
         score = 0
         score += reservas_usadas * 10
-        score += no_shows * 30
+        score += no_shows * 60
         score += reservas_canceladas * 2
 
         return score
