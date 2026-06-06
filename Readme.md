@@ -3,9 +3,10 @@ Requisitos previos
 
 Para ejecutar la aplicación es necesario tener instalado:
 
-Docker Desktop
-Docker Compose
-Ejecución
+- Docker Desktop
+- Docker Compose
+
+Ejecución:
 
 Clonar el repositorio:
 
