@@ -27,3 +27,9 @@ Frontend
 http://localhost:5173
 Backend
 http://localhost:8000
+
+Usuario admin : lillo 
+contraseña : 1234
+
+Usuario cliente : alejandro
+contraseña : 1234
